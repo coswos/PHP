@@ -1,0 +1,12 @@
+services:
+  app:
+    image: php:8.3-apache
+    container_name: php83-app
+    ports:
+      - "8080:80"
+    environment:
+      TZ: Europe/Warsaw
+    volumes:
+      - ./src:/var/www/html
+    # Для корректной работы .htaccess (если понадобится) включим rewrite через Dockerfile (см. ниже "ЧПУ/htaccess")
+    # Либо оставь так для супер-минималки.
