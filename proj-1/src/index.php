@@ -1,15 +1,15 @@
-<Hello>
-Hello world!
-    
-</div>
+<form method="post" action="test.php">
+  Choose bun:<br>
+  <input type="radio" name="bun" value="white" > White<br>
+  <input type="radio" name="bun" value="black" > Black<br>
 
-<?php
-$name = 'Yuriy';
-$age = 32;
-?>
+  <br>Choose sauce:<br>
+  <input type="checkbox" name="sauce[]" value="ketchup"> Ketchup<br>
+  <input type="checkbox" name="sauce[]" value="mayo"> Mayo<br>
+  <input type="checkbox" name="sauce[]" value="garlic"> Garlic<br>
 
-<p>
-    Your data:
-    Age: <?=$age;?> <br>
-    Name: <?php echo $name;?>
-</p>
+  <br>Agreement of terms: <br>
+  Agree<input type="checkbox" name="agreement" required><br>
+
+  <button type="submit">Order</button>
+</form>
