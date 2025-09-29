@@ -1,41 +1,75 @@
 <?php
-$login = 'admin';
+// login.php
+
+// 1. Запуск сессии для работы с Flash-сообщениями
+session_start();
+
+// --- Секция 1: Обработка отправки формы (логика) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($_POST['login'] === $login && $_POST['passwd'] === $login) {
-        header("Location: admin.php");
-        exit;
+    
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+    
+    // ВАЛИДАЦИЯ (заменим реальную логику простым примером)
+    if ($username === 'admin' && $password === '12345') {
+        
+        // Успешный вход: сохраняем данные в сессию и редирект в админку
+        $_SESSION['logged_in'] = true;
+        $_SESSION['username'] = $username;
+        
+        // Редирект в админку (предположим, что это файл admin.php)
+        header('Location: admin.php');
+        exit(); // Всегда останавливаем скрипт после header('Location: ...')
+
     } else {
-        // выебуется редирект, исправить через сессию
-        echo "<script>alert('Wrong login or password!');</script>";
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
+        
+        // Ошибка: сохраняем сообщение в сессию для отображения на этой же странице
+        $_SESSION['flash_error'] = 'Неверное имя пользователя или пароль!';
+        
+        // Редирект обратно на страницу входа. 
+        // Это предотвращает повторную отправку формы при обновлении страницы.
+        header('Location: login.php');
+        exit(); 
     }
 }
 
+// --- Секция 2: Чтение и отображение Flash-сообщения ---
 ?>
 
-
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Log in</title>
+    <title>Вход в Админку</title>
 </head>
-
 <body>
-    <div class="form">
 
-        <form method="post">
-            Login: <br>
-            <input type="text" name="login"> <br>
-            Password: <br>
-            <input type="password" name="passwd"> <br>
-            <button type="submit"><b>Enter</b></button>
-        </form>
-    </div>
+    <h1>Вход в Административную панель</h1>
+
+    <?php
+    // Проверяем, есть ли в сессии сообщение об ошибке, которое нужно показать
+    if (isset($_SESSION['flash_error'])) {
+        
+        // 1. Выводим сообщение (с безопасной функцией htmlspecialchars!)
+        echo '<div style="color: red; border: 1px solid red; padding: 10px; margin-bottom: 15px;">';
+        echo htmlspecialchars($_SESSION['flash_error']);
+        echo '</div>';
+        
+        // 2. КРИТИЧЕСКИ ВАЖНЫЙ ШАГ: Удаляем сообщение из сессии.
+        // Это гарантирует, что оно не появится при следующем обновлении страницы.
+        unset($_SESSION['flash_error']);
+    }
+    ?>
+
+    <form method="POST" action="login.php">
+        <label for="username">Имя пользователя:</label><br>
+        <input type="text" id="username" name="username" value=""><br><br>
+        
+        <label for="password">Пароль:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+        
+        <input type="submit" value="Войти">
+    </form>
+
 </body>
-
 </html>
